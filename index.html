@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wild West Market Terminal</title>
 
-<link rel="icon" type="image/png" href="favicon.png">
+<!-- FAVICON -->
+<link rel="icon" type="image/png" href="favicon.png?v=2">
 
 <style>
 body {
@@ -119,6 +120,7 @@ tr:hover {
 
 <div class="wrapper">
 
+<!-- SIDEBAR -->
 <div class="sidebar">
     <div class="tab active" onclick="setView('auction', this)">AUCTION HOUSE</div>
     <div class="tab" onclick="setView('events', this)">EVENT ITEMS</div>
@@ -130,6 +132,7 @@ tr:hover {
     </div>
 </div>
 
+<!-- MAIN -->
 <div class="main">
 
 <input class="search" id="search" onkeyup="render()" placeholder="SEARCH ITEMS...">
@@ -152,6 +155,7 @@ tr:hover {
 
 </div>
 
+<!-- PREVIEW -->
 <div id="preview"></div>
 
 <script>
@@ -175,11 +179,14 @@ let events = [
 
 let about = [
     { title:"Wild West Market Terminal", text:"A stock-style tracker for The Wild West Roblox game items." },
-    { title:"Version", text:"Version 1 - Initial release of the terminal." },
+    { title:"Version", text:"Version 1 - Initial release." },
     { title:"Credits", text:"Made by: coleaice" },
-    { title:"Roblox Profile", text:`<a href="https://www.roblox.com/users/1431249798/profile" target="_blank" style="color:#60a5fa; text-decoration:none;">
-    https://www.roblox.com/users/1431249798/profile
-    </a>` }
+    { 
+        title:"Roblox Profile", 
+        text:`<a href="https://www.roblox.com/users/1431249798/profile" target="_blank" style="color:#60a5fa; text-decoration:none;">
+        https://www.roblox.com/users/1431249798/profile
+        </a>`
+    }
 ];
 
 function setView(v, el){
@@ -200,11 +207,11 @@ function showPreview(item){
     box.style.display = "block";
 
     box.innerHTML = `
-        <div style="font-weight:bold; margin-bottom:6px;">${item.name}</div>
-        <div style="color:#9ca3af; margin-bottom:6px;">Type: ${item.type}</div>
-        <div style="color:#9ca3af; margin-bottom:6px;">Price: ${item.price}</div>
-        <div style="color:#9ca3af; margin-bottom:6px;">Bid: ${item.bid || "N/A"}</div>
-        <div style="color:#9ca3af;">${item.description || "No description available."}</div>
+        <div style="font-weight:bold;margin-bottom:6px;">${item.name}</div>
+        <div style="color:#9ca3af;margin-bottom:6px;">Type: ${item.type}</div>
+        <div style="color:#9ca3af;margin-bottom:6px;">Price: ${item.price}</div>
+        <div style="color:#9ca3af;margin-bottom:6px;">Bid: ${item.bid || "N/A"}</div>
+        <div style="color:#9ca3af;">${item.description || "No description."}</div>
     `;
 }
 
@@ -220,11 +227,12 @@ function render(){
     if(view === "about"){
         about.forEach(item => {
             if(!item.title.toUpperCase().includes(search)) return;
+
             tbody.innerHTML += `
             <tr>
                 <td colspan="5">
                     <div style="padding:10px;">
-                        <div style="color:#22c55e; font-weight:bold; margin-bottom:6px;">
+                        <div style="color:#22c55e;font-weight:bold;margin-bottom:6px;">
                             ${item.title}
                         </div>
                         <div style="color:#9ca3af;">
