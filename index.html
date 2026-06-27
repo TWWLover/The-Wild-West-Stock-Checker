@@ -3,136 +3,199 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Wild West Item Tracker</title>
+<title>Wild West Stock Tracker</title>
 
 <style>
 body {
     margin: 0;
-    font-family: system-ui, Arial;
-    background: #0b0f14;
-    color: #e6e6e6;
+    font-family: ui-monospace, monospace;
+    background: #070a0f;
+    color: #d1d5db;
 }
 
+/* TOP */
 .topbar {
-    padding: 14px;
-    background: #111827;
+    padding: 12px;
+    background: #0f172a;
     border-bottom: 1px solid #1f2937;
     display: flex;
     justify-content: space-between;
 }
 
-.container {
-    padding: 20px;
+/* LAYOUT */
+.wrapper {
+    display: flex;
+    height: calc(100vh - 48px);
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 240px;
+    background: #0b1220;
+    border-right: 1px solid #1f2937;
+    padding: 10px;
+}
+
+.tab {
+    padding: 10px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    background: #0f172a;
+    border: 1px solid #1f2937;
+    font-size: 12px;
+}
+
+.active {
+    border-color: #22c55e;
+    color: #22c55e;
+}
+
+/* MAIN */
+.main {
+    flex: 1;
+    padding: 12px;
+    overflow: auto;
 }
 
 .search {
     width: 100%;
     padding: 10px;
-    margin-bottom: 16px;
-    background: #111827;
-    border: 1px solid #1f2937;
-    color: white;
-    border-radius: 6px;
-    outline: none;
-}
-
-.section-title {
-    margin: 18px 0 10px;
-    font-size: 14px;
-    color: #9ca3af;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-.card {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     background: #0f172a;
     border: 1px solid #1f2937;
-    border-radius: 6px;
+    color: white;
 }
 
-.name {
-    font-weight: 600;
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #0b1220;
 }
 
-.meta {
+th {
+    text-align: left;
     font-size: 11px;
     color: #9ca3af;
-    margin-top: 2px;
+    padding: 10px;
+    border-bottom: 1px solid #1f2937;
 }
 
-.price {
-    color: #facc15;
-    font-weight: 600;
+td {
+    padding: 10px;
+    border-bottom: 1px solid #1f2937;
+    font-size: 13px;
 }
 
-.bid {
-    font-size: 11px;
-    color: #9ca3af;
+tr:hover {
+    background: #0f172a;
 }
 
+.up { color: #22c55e; }
+.down { color: #ef4444; }
+.flat { color: #facc15; }
 </style>
 </head>
 
 <body>
 
 <div class="topbar">
-    <div>The Wild West Tracker</div>
-    <div>Database View</div>
+    <div>WILD WEST MARKET TERMINAL</div>
+    <div>● LIVE DATABASE</div>
 </div>
 
-<div class="container">
+<div class="wrapper">
 
-<input class="search" id="search" onkeyup="render()" placeholder="Search items...">
+<!-- LEFT -->
+<div class="sidebar">
 
-<div id="content"></div>
+<div class="tab active" onclick="setView('auction', this)">AUCTION HOUSE</div>
+<div class="tab" onclick="setView('events', this)">EVENT ITEMS</div>
+
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<input class="search" id="search" onkeyup="render()" placeholder="SEARCH ITEMS...">
+
+<table>
+<thead>
+<tr>
+<th>ITEM</th>
+<th>TYPE</th>
+<th>PRICE</th>
+<th>BID</th>
+<th>TREND</th>
+</tr>
+</thead>
+
+<tbody id="table"></tbody>
+</table>
+
+</div>
 
 </div>
 
 <script>
 
-let data = [
-    // 🎵 Instruments
-    {name:"Harmonica", type:"instrument", price:2000, bid:700},
-    {name:"Drum", type:"instrument", price:2000, bid:700},
-    {name:"Flute", type:"instrument", price:4000, bid:1400},
-    {name:"Trumpet", type:"instrument", price:6000, bid:2100},
-    {name:"Fiddle", type:"instrument", price:8000, bid:2800},
-    {name:"Guitar", type:"instrument", price:10000, bid:3500},
-    {name:"Accordion", type:"instrument", price:10000, bid:3500},
+let view = "auction";
+
+/* AUCTION ITEMS */
+let auction = [
+    {name:"Henry Rifle", type:"Gun", price:42000, bid:15000, trend:"up"},
+    {name:"Volcanic Pistol", type:"Gun", price:31000, bid:12000, trend:"down"},
+    {name:"Hunting Knife", type:"Melee", price:5000, bid:2000, trend:"flat"},
+    {name:"Tomahawk", type:"Melee", price:7000, bid:2500, trend:"up"},
+    {name:"Harmonica", type:"Instrument", price:2000, bid:700, trend:"flat"},
 ];
+
+/* EVENT ITEMS (ALL IN ONE SECTION) */
+let events = [
+    {name:"Remains", type:"Loot", price:"N/A", bid:"N/A", trend:"flat"},
+    {name:"Cursed Lantern", type:"Tool", price:"N/A", bid:"N/A", trend:"flat"},
+    {name:"Occult Sawed Off", type:"Weapon", price:"N/A", bid:"N/A", trend:"flat"},
+    {name:"Skinwalker Bone", type:"Loot", price:"N/A", bid:"N/A", trend:"flat"},
+    {name:"Candy Cane", type:"Weapon", price:"N/A", bid:"N/A", trend:"flat"},
+    {name:"Festive Sharps", type:"Weapon", price:"N/A", bid:"N/A", trend:"flat"},
+];
+
+function setView(v, el){
+    view = v;
+
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    el.classList.add("active");
+
+    render();
+}
+
+function getTrend(t){
+    if(t === "up") return `<span class="up">▲</span>`;
+    if(t === "down") return `<span class="down">▼</span>`;
+    return `<span class="flat">➜</span>`;
+}
 
 function render(){
 
     let search = document.getElementById("search").value.toUpperCase();
-    let content = document.getElementById("content");
+    let tbody = document.getElementById("table");
 
-    content.innerHTML = "";
+    tbody.innerHTML = "";
 
-    let instruments = data.filter(i => i.type === "instrument");
+    let list = view === "auction" ? auction : events;
 
-    // SECTION TITLE
-    content.innerHTML += `<div class="section-title">🎵 Instruments</div>`;
-
-    instruments.forEach(item => {
+    list.forEach(item => {
 
         if(!item.name.toUpperCase().includes(search)) return;
 
-        content.innerHTML += `
-        <div class="card">
-            <div>
-                <div class="name">${item.name}</div>
-                <div class="meta">Type: Instrument</div>
-            </div>
-
-            <div style="text-align:right">
-                <div class="price">$${item.price.toLocaleString()}</div>
-                <div class="bid">Starting Bid: $${item.bid.toLocaleString()}</div>
-            </div>
-        </div>
+        tbody.innerHTML += `
+        <tr>
+            <td>${item.name}</td>
+            <td>${item.type}</td>
+            <td>${item.price}</td>
+            <td>${item.bid}</td>
+            <td>${getTrend(item.trend)}</td>
+        </tr>
         `;
     });
 }
